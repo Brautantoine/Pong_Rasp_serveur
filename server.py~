@@ -1,0 +1,88 @@
+#!/usr/bin/python
+
+import socket
+import time
+
+TCP_IP = '192.168.0.182'
+TCP_PORT = 4242
+BUFFER_SIZE = 2
+
+vectX = 1
+vectY = -1
+posX = 4
+posY = 4
+
+s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+s.bind((TCP_IP, TCP_PORT))
+s.listen(1)
+
+print 'Lancement du serveur \nAttente des connections ... '
+rasp1, addr = s.accept()
+rasp1.send('Bienvenue sur le serveur joueur 1')
+rasp1.send(str('1'))
+print 'Connection address:',addr
+rasp2, addr2 = s.accept()
+rasp2.send('Bienvenue sur le serveur joueur 2')
+rasp2.send(str('2'))
+print 'connection address:',addr2
+
+while 1:
+	print 'Pos x:{} y:{}',int(posX),int(posY)
+	#for loop in range (0,16):
+	if posX==15:
+		rasp1.send(str(posX))
+       		rasp1.send(str(posY))
+        	rasp2.send(str(posX))
+        	rasp2.send(str(posY))
+		data = int(rasp2.recv(BUFFER_SIZE))
+		if data==1:
+			print 'bat 2 1'
+			vectX=(-1)
+			vectY=0
+		elif data==2:
+			print 'bat2 2'
+			vectX=(-1)
+			vectY=0
+		elif data==3:
+			print 'bat 2 3'
+			vectX=(-1)
+			vectY=0
+		elif data==4:
+			print 'bat 2 4'
+			posX=4
+			posY=4
+	if posX==0:
+		rasp1.send(str(posX))
+        	rasp1.send(str(posY))
+        	rasp2.send(str(posX))
+        	rasp2.send(str(posY))
+		data = int(rasp1.recv(BUFFER_SIZE))
+		if data==1:
+			print 'bat 1 1'
+                        vectX=(1)
+                        vectY=0
+                elif data==2:
+			print 'bat 1 2'
+                        vectX=(1)
+                        vectY=0
+                elif data==3:
+			print 'bat 1 3'
+                        vectX=(1)
+                        vectY=0
+                elif data==4:
+			print 'bat 1 4'
+                        posX=4
+                        posY=4
+	if posY==7:
+		vectY=(-1)
+	if posY==0:
+		vectY=1
+	rasp1.send(str(posX))
+	rasp1.send(str(posY))
+	rasp2.send(str(posX))
+	rasp2.send(str(posY))
+	posY+=vectY
+        posX+=vectX
+	time.sleep(0.3)
+rasp1.close()	
+rasp2.close()
